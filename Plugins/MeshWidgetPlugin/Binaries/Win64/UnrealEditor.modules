@@ -1,0 +1,9 @@
+{
+	"BuildId": "27405482",
+	"Modules": 
+	{
+		"MeshWidgetEditor": "UnrealEditor-MeshWidgetEditor.dll",
+		"MeshWidgetPlugin": "UnrealEditor-MeshWidgetPlugin.dll",
+		"MeshWidgetRuntime": "UnrealEditor-MeshWidgetRuntime.dll"
+	}
+}
