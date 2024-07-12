@@ -1,0 +1,8 @@
+{
+	"BuildId": "19505902",
+	"Modules": 
+	{
+		"MeshPainterShaderCore": "UnrealEditor-MeshPainterShaderCore.dll",
+		"RuntimeMeshPainter": "UnrealEditor-RuntimeMeshPainter.dll"
+	}
+}

@@ -1,0 +1,112 @@
+#include "/Engine/Private/Common.ush"
+#include "/Engine/Generated/Material.ush"
+#include "/Engine/Generated/VertexFactory.ush"
+
+struct FMeshPaintShaderVSToPS
+{
+	FVertexFactoryInterpolantsVSToPS FactoryInterpolants;
+	float4 Position : SV_POSITION;
+	float4 SavedWorldPosition : POSITION1;
+	float4 SavedWorldPositionWithShaderOffsets : POSITION2;
+	float4 SvPosition : POSITION3;
+	half2 UVSpace : POSITION4;
+};
+
+#if VERTEXSHADER
+float4 UVTileMapping;
+
+void MeshPaintShaderVS(
+	FVertexFactoryInput Input,
+	out FMeshPaintShaderVSToPS Output
+	)
+{
+	ResolvedView = ResolveView();
+
+	FVertexFactoryIntermediates VFIntermediates = GetVertexFactoryIntermediates(Input);
+	float3 WorldPosition = VertexFactoryGetWorldPosition(Input, VFIntermediates).xyz;
+	float3x3 TangentToLocal = VertexFactoryGetTangentToLocal(Input, VFIntermediates);
+	FMaterialVertexParameters VertexParameters = GetMaterialVertexParameters(Input, VFIntermediates, WorldPosition, TangentToLocal);
+
+	Output.FactoryInterpolants = VertexFactoryGetInterpolantsVSToPS(Input, VFIntermediates, VertexParameters);
+
+#if HAVE_GetMeshPaintUVOutput0
+	const float2 UV = GetMeshPaintUVOutput0(VertexParameters);
+#else
+	const float2 UV = float2(0.5f, 0.5f);
+#endif
+	const float2 UVClipSpaceNormalized = UV * UVTileMapping.xy + UVTileMapping.zw;
+
+	Output.UVSpace = UV;
+	Output.Position = float4(UVClipSpaceNormalized, 0.0f, 1.0f);
+	Output.SavedWorldPosition = VertexFactoryGetWorldPosition(Input, VFIntermediates);
+	Output.SavedWorldPositionWithShaderOffsets = Output.SavedWorldPosition + float4(GetMaterialWorldPositionOffset(VertexParameters), 0.0f);
+	Output.SvPosition = mul(Output.SavedWorldPosition, ResolvedView.TranslatedWorldToClip);
+}
+#endif
+
+#define GLUE(A, B) A ## B
+#define COMBINE(A, B) GLUE(A, B)
+
+#if MRT_MAX > 1
+#define OPTIONAL_MRT1 out float4 MRT1 : SV_Target1,
+#else
+#define OPTIONAL_MRT1
+#endif
+
+#if MRT_MAX > 2
+#define OPTIONAL_MRT2 out float4 MRT2 : SV_Target2,
+#else
+#define OPTIONAL_MRT2
+#endif
+
+#ifdef MRT_BASE_COLOR
+#define OUTPUT_BaseColor(V, O) COMBINE(MRT, MRT_BASE_COLOR) = float4(V, O);
+#else
+#define OUTPUT_BaseColor(V, O)
+#endif
+
+#ifdef MRT_EMISSIVE
+#define OUTPUT_Emissive(V, O) COMBINE(MRT, MRT_EMISSIVE) = float4(V, O);
+#else
+#define OUTPUT_Emissive(V, O)
+#endif
+
+#ifdef MRT_NORMAL
+#define OUTPUT_Normal(V, O) COMBINE(MRT, MRT_NORMAL) = float4(V, O);
+#else
+#define OUTPUT_Normal(V, O)
+#endif
+
+#if PIXELSHADER
+void MeshPaintShaderPS(
+	out float4 MRT0	: SV_Target0,
+	OPTIONAL_MRT1
+	OPTIONAL_MRT2
+	FMeshPaintShaderVSToPS Input
+	OPTIONAL_IsFrontFace
+	)
+{ 
+	ResolvedView = ResolveView();
+
+	// Prevent UV GetRenderTargetSampleCount from falling out of it's desired atlas cell
+	const half2 ClipArea = saturate(Input.UVSpace);
+	const half2 ClipValue = dot(ClipArea, 1.0f - ClipArea);
+	clip(min(ClipValue.x, ClipValue.y));
+
+	FMaterialPixelParameters MaterialParameters = GetMaterialPixelParameters(Input.FactoryInterpolants, Input.SavedWorldPosition);
+	FPixelMaterialInputs PixelMaterialInputs;
+
+	float4 ScreenPosition = SvPositionToResolvedScreenPosition(Input.SvPosition);
+	CalcMaterialParametersEx(MaterialParameters, PixelMaterialInputs, Input.SvPosition, ScreenPosition, bIsFrontFace, Input.SavedWorldPositionWithShaderOffsets, Input.SavedWorldPosition);	
+	GetMaterialCoverageAndClipping(MaterialParameters, PixelMaterialInputs);
+
+	const half3 BaseColor = GetMaterialBaseColor(PixelMaterialInputs);
+	const half3 Emissive = GetMaterialEmissive(PixelMaterialInputs);
+	const half3 Normal = GetMaterialNormal(MaterialParameters, PixelMaterialInputs);
+
+	const float Opacity = GetMaterialOpacity(PixelMaterialInputs);
+	OUTPUT_BaseColor(Emissive, Opacity)
+	OUTPUT_Emissive(Emissive, Opacity)
+	OUTPUT_Normal(Emissive, Opacity)
+}
+#endif

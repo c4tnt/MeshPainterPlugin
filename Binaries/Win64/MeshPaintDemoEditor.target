@@ -2987,6 +2987,26 @@
 		{
 			"Path": "$(ProjectDir)/Plugins/MeshWidgetPlugin/Binaries/Win64/UnrealEditor-MeshWidgetRuntime.pdb",
 			"Type": "SymbolFile"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/RuntimeMeshPainter/Binaries/Win64/UnrealEditor.modules",
+			"Type": "RequiredResource"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/RuntimeMeshPainter/Binaries/Win64/UnrealEditor-MeshPainterShaderCore.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/RuntimeMeshPainter/Binaries/Win64/UnrealEditor-MeshPainterShaderCore.pdb",
+			"Type": "SymbolFile"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/RuntimeMeshPainter/Binaries/Win64/UnrealEditor-RuntimeMeshPainter.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/RuntimeMeshPainter/Binaries/Win64/UnrealEditor-RuntimeMeshPainter.pdb",
+			"Type": "SymbolFile"
 		}
 	],
 	"RuntimeDependencies": [
@@ -23504,6 +23524,10 @@
 		},
 		{
 			"Path": "$(ProjectDir)/Plugins/MeshWidgetPlugin/MeshWidgetPlugin.uplugin",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/RuntimeMeshPainter/RuntimeMeshPainter.uplugin",
 			"Type": "UFS"
 		}
 	],
