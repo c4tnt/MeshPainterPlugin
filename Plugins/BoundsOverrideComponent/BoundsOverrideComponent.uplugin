@@ -1,0 +1,25 @@
+{
+    "FileVersion" : 3,
+ 
+    "FriendlyName" : "Bounds Override Component",
+    "Version" : 1.1,
+    "VersionName": "1.1",
+    "Description" : "Adds new blueprint component with overridable bounds and bounds capture functionality",
+    "Category" : "Component Plugin",
+    "CreatedBy" : "Vladimir Baranov",
+    "CreatedByURL" : "N/A",
+ 
+    "Modules" :
+    [
+        {
+            "Name" : "BoundsOverrideRuntime",
+            "Type" : "RunTime",
+			"LoadingPhase" : "PreDefault"
+        },
+        {
+            "Name" : "BoundsOverrideEditor",
+            "Type" : "Editor",
+			"LoadingPhase" : "Default"
+        } 
+    ]
+}
