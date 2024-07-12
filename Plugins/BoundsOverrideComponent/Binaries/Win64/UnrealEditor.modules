@@ -1,0 +1,8 @@
+{
+	"BuildId": "19505902",
+	"Modules": 
+	{
+		"BoundsOverrideEditor": "UnrealEditor-BoundsOverrideEditor.dll",
+		"BoundsOverrideRuntime": "UnrealEditor-BoundsOverrideRuntime.dll"
+	}
+}

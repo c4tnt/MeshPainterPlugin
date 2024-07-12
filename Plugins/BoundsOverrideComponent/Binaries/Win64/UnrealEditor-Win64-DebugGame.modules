@@ -1,0 +1,8 @@
+{
+	"BuildId": "27405482",
+	"Modules": 
+	{
+		"BoundsOverrideEditor": "UnrealEditor-BoundsOverrideEditor-Win64-DebugGame.dll",
+		"BoundsOverrideRuntime": "UnrealEditor-BoundsOverrideRuntime-Win64-DebugGame.dll"
+	}
+}

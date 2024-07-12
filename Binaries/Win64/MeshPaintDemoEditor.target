@@ -2969,6 +2969,26 @@
 			"Type": "SymbolFile"
 		},
 		{
+			"Path": "$(ProjectDir)/Plugins/BoundsOverrideComponent/Binaries/Win64/UnrealEditor.modules",
+			"Type": "RequiredResource"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/BoundsOverrideComponent/Binaries/Win64/UnrealEditor-BoundsOverrideEditor.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/BoundsOverrideComponent/Binaries/Win64/UnrealEditor-BoundsOverrideEditor.pdb",
+			"Type": "SymbolFile"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/BoundsOverrideComponent/Binaries/Win64/UnrealEditor-BoundsOverrideRuntime.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/BoundsOverrideComponent/Binaries/Win64/UnrealEditor-BoundsOverrideRuntime.pdb",
+			"Type": "SymbolFile"
+		},
+		{
 			"Path": "$(ProjectDir)/Plugins/MeshWidgetPlugin/Binaries/Win64/UnrealEditor.modules",
 			"Type": "RequiredResource"
 		},
@@ -23520,6 +23540,10 @@
 		},
 		{
 			"Path": "$(ProjectDir)/MeshPaintDemo.uproject",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/BoundsOverrideComponent/BoundsOverrideComponent.uplugin",
 			"Type": "UFS"
 		},
 		{
