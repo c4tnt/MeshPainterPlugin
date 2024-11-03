@@ -7,6 +7,20 @@
 #include "Engine/TextureRenderTarget2D.h"
 #include "MeshPainterFunctionLibrary.generated.h"
 
+UENUM(BlueprintType)
+enum class ERenderMaterialOnMeshFilter : uint8
+{
+	// No filtering
+	None,
+
+	// Apply 4x dilation
+	Dilation4x,
+
+	// Apply 8x dilation
+	Dilation8x
+};
+
+
 USTRUCT(BlueprintType)
 struct FRenderMaterialOnMeshPrimitive
 {
@@ -63,7 +77,8 @@ public:
 		UTextureRenderTarget2D* Emissive,
 		UTextureRenderTarget2D* NormalMap,
 		int32 LOD, 
-		bool bClearRenderTargets);
+		bool bClearRenderTargets,
+		ERenderMaterialOnMeshFilter Filter);
 
 	UFUNCTION(BlueprintCallable, meta=(WorldContext="WorldContextObject"))
 	static bool RenderMaterialOnMeshUVAtlas(
@@ -75,7 +90,8 @@ public:
 		UTextureRenderTarget2D* NormalMap,
 		int32 LOD, 
 		const FBox2D& UVRegion,
-		bool bClearRenderTargets
+		bool bClearRenderTargets,
+		ERenderMaterialOnMeshFilter Filter
 	);
 
 	UFUNCTION(BlueprintCallable, meta=(WorldContext="WorldContextObject"))
@@ -87,7 +103,8 @@ public:
 		UTextureRenderTarget2D* Emissive,
 		UTextureRenderTarget2D* NormalMap,
 		const FBox2D& UVRegion,
-		bool bClearRenderTargets
+		bool bClearRenderTargets,
+		ERenderMaterialOnMeshFilter Filter
 	);
 
 	static bool RenderMaterialOnMeshUVAtlasMulti(
@@ -98,6 +115,7 @@ public:
 		UTextureRenderTarget2D* Emissive,
 		UTextureRenderTarget2D* NormalMap,
 		const FRenderMaterialOnMeshViewConfiguration& ViewPointConfiguration,
-		bool bClearRenderTargets
+		bool bClearRenderTargets,
+		ERenderMaterialOnMeshFilter Filter
 	);
 };

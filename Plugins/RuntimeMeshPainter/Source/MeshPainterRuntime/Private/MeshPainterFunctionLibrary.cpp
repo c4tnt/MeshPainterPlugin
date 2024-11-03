@@ -12,12 +12,12 @@ bool UMeshPainterFunctionLibrary::RenderMaterialOnMeshUVLayout(
 	UTextureRenderTarget2D* BaseColor, 
 	UTextureRenderTarget2D* Emissive,
 	UTextureRenderTarget2D* NormalMap,
-	int32 LOD, bool bClearRenderTargets)
+	int32 LOD, bool bClearRenderTargets, ERenderMaterialOnMeshFilter Filter)
 {
 	FRenderMaterialOnMeshPrimitive PrimitiveInfo;
 	PrimitiveInfo.DesiredLOD = LOD;
 	PrimitiveInfo.MeshComponent = MeshComponent;
-	return RenderMaterialOnMeshUVAtlasMulti(WorldContextObject, MakeArrayView(&PrimitiveInfo, 1), Material, BaseColor, Emissive, NormalMap, FRenderMaterialOnMeshViewConfiguration(), bClearRenderTargets);
+	return RenderMaterialOnMeshUVAtlasMulti(WorldContextObject, MakeArrayView(&PrimitiveInfo, 1), Material, BaseColor, Emissive, NormalMap, FRenderMaterialOnMeshViewConfiguration(), bClearRenderTargets, Filter);
 }
 
 bool UMeshPainterFunctionLibrary::RenderMaterialOnMeshUVAtlas(
@@ -27,13 +27,13 @@ bool UMeshPainterFunctionLibrary::RenderMaterialOnMeshUVAtlas(
 	UTextureRenderTarget2D* BaseColor, 
 	UTextureRenderTarget2D* Emissive,
 	UTextureRenderTarget2D* NormalMap,
-	int32 LOD, const FBox2D& UVRegion, bool bClearRenderTargets)
+	int32 LOD, const FBox2D& UVRegion, bool bClearRenderTargets, ERenderMaterialOnMeshFilter Filter)
 {
 	FRenderMaterialOnMeshPrimitive PrimitiveInfo;
 	PrimitiveInfo.DesiredLOD = LOD;
 	PrimitiveInfo.MeshComponent = MeshComponent;
 	PrimitiveInfo.UVRegion = UVRegion;
-	return RenderMaterialOnMeshUVAtlasMulti(WorldContextObject, MakeArrayView(&PrimitiveInfo, 1), Material, BaseColor, Emissive, NormalMap, FRenderMaterialOnMeshViewConfiguration(), bClearRenderTargets);
+	return RenderMaterialOnMeshUVAtlasMulti(WorldContextObject, MakeArrayView(&PrimitiveInfo, 1), Material, BaseColor, Emissive, NormalMap, FRenderMaterialOnMeshViewConfiguration(), bClearRenderTargets, Filter);
 }
 
 bool UMeshPainterFunctionLibrary::RenderMaterialOnMeshUVAtlasMulti(
@@ -44,10 +44,22 @@ bool UMeshPainterFunctionLibrary::RenderMaterialOnMeshUVAtlasMulti(
 	UTextureRenderTarget2D* Emissive,
 	UTextureRenderTarget2D* NormalMap,
 	const FBox2D& UVRegion,
-	bool bClearRenderTargets
+	bool bClearRenderTargets,
+	ERenderMaterialOnMeshFilter Filter
 )
 {
-	return RenderMaterialOnMeshUVAtlasMulti(WorldContextObject, MakeArrayView(Components), Material, BaseColor, Emissive, NormalMap, FRenderMaterialOnMeshViewConfiguration(), bClearRenderTargets);
+	return RenderMaterialOnMeshUVAtlasMulti(WorldContextObject, MakeArrayView(Components), Material, BaseColor, Emissive, NormalMap, FRenderMaterialOnMeshViewConfiguration(), bClearRenderTargets, Filter);
+}
+
+FMeshPaintRenderParameters::EFilterMode EncodeFilterType(ERenderMaterialOnMeshFilter Filter)
+{
+	switch (Filter)
+	{
+	case ERenderMaterialOnMeshFilter::None: return FMeshPaintRenderParameters::EFilterMode::None;
+	case ERenderMaterialOnMeshFilter::Dilation4x: return FMeshPaintRenderParameters::EFilterMode::Dilation4;
+	case ERenderMaterialOnMeshFilter::Dilation8x: return FMeshPaintRenderParameters::EFilterMode::Dilation8;
+	default: return FMeshPaintRenderParameters::EFilterMode::None;
+	}
 }
 
 bool UMeshPainterFunctionLibrary::RenderMaterialOnMeshUVAtlasMulti(
@@ -58,7 +70,8 @@ bool UMeshPainterFunctionLibrary::RenderMaterialOnMeshUVAtlasMulti(
 	UTextureRenderTarget2D* Emissive,
 	UTextureRenderTarget2D* NormalMap,
 	const FRenderMaterialOnMeshViewConfiguration& ViewPointConfiguration,
-	bool bClearRenderTargets
+	bool bClearRenderTargets,
+	ERenderMaterialOnMeshFilter Filter
 )
 {
 	// Must execute on the main thread
@@ -92,7 +105,8 @@ bool UMeshPainterFunctionLibrary::RenderMaterialOnMeshUVAtlasMulti(
 	Params.Scene = World->Scene;
 	Params.MaterialOverride = Material ? Material->GetRenderProxy() : nullptr;
 	Params.ViewProjection = ViewInitOptions;
-	
+	Params.FilteringMode = EncodeFilterType(Filter);
+
 	for (const FRenderMaterialOnMeshPrimitive& Prim : Components)
 	{
 		if (!IsValid(Prim.MeshComponent) || !Prim.MeshComponent->SceneProxy) continue;

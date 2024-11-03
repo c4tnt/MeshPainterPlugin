@@ -6272,6 +6272,18 @@
 		{
 			"Path": "$(ProjectDir)/Plugins/RuntimeMeshPainter/Binaries/Win64/UnrealEditor.modules",
 			"Type": "RequiredResource"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/TestThirdParty/Binaries/Win64/UnrealEditor-TestThirdParty.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/TestThirdParty/Binaries/Win64/UnrealEditor-TestThirdParty.pdb",
+			"Type": "SymbolFile"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/TestThirdParty/Binaries/Win64/UnrealEditor.modules",
+			"Type": "RequiredResource"
 		}
 	],
 	"RuntimeDependencies": [
@@ -27569,6 +27581,14 @@
 		},
 		{
 			"Path": "$(ProjectDir)/Plugins/RuntimeMeshPainter/RuntimeMeshPainter.uplugin",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/TestThirdParty/Binaries/ThirdParty/TestThirdPartyLibrary/Win64/ExampleLibrary.dll",
+			"Type": "NonUFS"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/TestThirdParty/TestThirdParty.uplugin",
 			"Type": "UFS"
 		}
 	],

@@ -30,6 +30,7 @@ UMaterialExpressionMeshPaintUVOutput::UMaterialExpressionMeshPaintUVOutput(const
 int32 UMaterialExpressionMeshPaintUVOutput::Compile(class FMaterialCompiler* Compiler, int32 OutputIndex)
 {
 	int32 CodeInput = INDEX_NONE;
+
 	if (OutputIndex == 0)
 	{
 		CodeInput = UV.IsConnected() ? UV.Compile(Compiler) : Compiler->Constant2(0.5f, 0.5f);

@@ -90,6 +90,8 @@ struct FMeshPaintProxyRenderParameters
 
 struct FMeshPaintRenderParameters
 {
+	enum class EFilterMode { None, Dilation4, Dilation8 };
+
 	/** A list of primitive scene proxies to render */
 	TArray<FMeshPaintProxyRenderParameters> PrimitivesToRender;
 
@@ -103,6 +105,9 @@ struct FMeshPaintRenderParameters
 	const FMaterialRenderProxy* MaterialOverride;
 	
 	bool bClearTargets;
+
+	/** Where on the screen we want to render this primitive (for atlasing) */
+	EFilterMode FilteringMode;
 };
 
 namespace MeshPaintRender
